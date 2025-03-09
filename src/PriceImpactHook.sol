@@ -10,11 +10,15 @@ import {StateLibrary} from "v4-core/libraries/StateLibrary.sol";
 import {BalanceDelta} from "v4-core/types/BalanceDelta.sol";
 import {LPFeeLibrary} from "v4-core/libraries/LPFeeLibrary.sol";
 import {BeforeSwapDelta, BeforeSwapDeltaLibrary} from "v4-core/types/BeforeSwapDelta.sol";
+import {TickMath} from "v4-core/libraries/TickMath.sol";
+import {console} from "forge-std/console.sol";
 
-contract PriceImpactHookHook is BaseHook {
+contract PriceImpactHook is BaseHook {
     using StateLibrary for IPoolManager;
     using PoolIdLibrary for PoolKey;
     using LPFeeLibrary for uint24;
+
+    uint24 constant BASE_FEE = 5000; // 0.5%
 
     struct PoolState {
         uint160 blockStartPrice;
@@ -23,20 +27,22 @@ contract PriceImpactHookHook is BaseHook {
 
     mapping(PoolId => PoolState) public poolState;
 
+    error MustUseDynamicFee();
+
     // Initialize BaseHook parent contract in the constructor
     constructor(IPoolManager _poolManager) BaseHook(_poolManager) {}
 
     // Required override function for BaseHook to let the PoolManager know which hooks are implemented
     function getHookPermissions() public pure override returns (Hooks.Permissions memory) {
         return Hooks.Permissions({
-            beforeInitialize: false,
+            beforeInitialize: true, // TRUE
             afterInitialize: false,
             beforeAddLiquidity: false,
             beforeRemoveLiquidity: false,
             afterAddLiquidity: false,
             afterRemoveLiquidity: false,
             beforeSwap: true, // TRUE
-            afterSwap: true, // TRUE
+            afterSwap: false,
             beforeDonate: false,
             afterDonate: false,
             beforeSwapReturnDelta: false,
@@ -46,37 +52,68 @@ contract PriceImpactHookHook is BaseHook {
         });
     }
 
-    function _beforeSwap(address, PoolKey calldata key, IPoolManager.SwapParams calldata, bytes calldata)
+    function _beforeInitialize(address, PoolKey calldata key, uint160) internal pure override returns (bytes4) {
+        // `.isDynamicFee()` function comes from using
+        // the `SwapFeeLibrary` for `uint24`
+        if (!key.fee.isDynamicFee()) revert MustUseDynamicFee();
+        return this.beforeInitialize.selector;
+    }
+
+    function _beforeSwap(address, PoolKey calldata key, IPoolManager.SwapParams calldata params, bytes calldata)
         internal
         override
         returns (bytes4, BeforeSwapDelta, uint24)
     {
-        PoolState storage state = poolState[key.toId()];
+        uint24 fee = BASE_FEE; // by default we assume the price will go further away from the start price
 
+        PoolState storage state = poolState[key.toId()];
+        (uint160 currentPrice,,,) = poolManager.getSlot0(key.toId());
+
+        // if we are on a new block, reset the start price
         if (state.lastSwapBlock < block.number) {
-            (uint160 sqrtPriceX96,,,) = poolManager.getSlot0(key.toId());
-            state.blockStartPrice = sqrtPriceX96; // replace with chainlink
+            state.blockStartPrice = currentPrice;
             state.lastSwapBlock = uint96(block.number);
+        } else {
+            if (
+                // Zero fee if:
+                // 1. current price is already at price limit (no price impact)
+                // 2. block start price is at price limit (move price back)
+                // 3. we move to the left towards the start block price
+                // 4. we move to the right towards the start block price
+                params.sqrtPriceLimitX96 == currentPrice || params.sqrtPriceLimitX96 == state.blockStartPrice
+                    || (
+                        params.zeroForOne && state.blockStartPrice < params.sqrtPriceLimitX96
+                            && params.sqrtPriceLimitX96 < currentPrice
+                    )
+                    || (
+                        !params.zeroForOne && currentPrice < params.sqrtPriceLimitX96
+                            && params.sqrtPriceLimitX96 < state.blockStartPrice
+                    )
+            ) {
+                fee = 0;
+            } else if (
+                // Adjusted fee if:
+                // 1. we move to the left, cross the start price, and move futher (pay only for the part that is further)
+                params.zeroForOne && currentPrice > state.blockStartPrice
+                    && params.sqrtPriceLimitX96 < state.blockStartPrice
+            ) {
+                fee = uint24(
+                    fee * (state.blockStartPrice - params.sqrtPriceLimitX96) / (currentPrice - params.sqrtPriceLimitX96)
+                );
+            } else if (
+                // 2. we move to the right, cross the start price, and move futher (pay only for the part that is further)
+                !params.zeroForOne && currentPrice < state.blockStartPrice
+                    && params.sqrtPriceLimitX96 > state.blockStartPrice
+            ) {
+                fee = uint24(
+                    fee * (params.sqrtPriceLimitX96 - state.blockStartPrice) / (params.sqrtPriceLimitX96 - currentPrice)
+                );
+            }
         }
 
-        return (this.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, 0);
-    }
+        console.log("fee", fee);
 
-    function _afterSwap(address, PoolKey calldata key, IPoolManager.SwapParams calldata, BalanceDelta, bytes calldata)
-        internal
-        override
-        returns (bytes4, int128)
-    {
-        (uint160 sqrtPriceX96,,,) = poolManager.getSlot0(key.toId());
-        uint160 endPrice = sqrtPriceX96;
-
-        // Calculate price impact
-
-
-        return (this.afterSwap.selector, 0);
-    }
-
-    function getPackedKey(address user, PoolId poolId, bool direction) internal pure returns (uint256) {
-        return (uint256(uint160(user)) << 96) | (uint256(PoolId.unwrap(poolId)) & ((1 << 96) - 1)) | (direction ? 1 : 0);
+        uint24 feeWithFlag = fee | LPFeeLibrary.OVERRIDE_FEE_FLAG;
+        return (this.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, feeWithFlag);
     }
 }
