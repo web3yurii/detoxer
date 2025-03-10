@@ -12,15 +12,15 @@ import {LPFeeLibrary} from "v4-core/libraries/LPFeeLibrary.sol";
 import {PoolKey} from "v4-core/types/PoolKey.sol";
 import {Hooks} from "v4-core/libraries/Hooks.sol";
 import {PoolSwapTest} from "v4-core/test/PoolSwapTest.sol";
-import {BothDirectionSwapHook} from "../src/BothDirectionSwapHook.sol";
+import {BlockPositionHook} from "../src/BlockPositionHook.sol";
 import {TickMath} from "v4-core/libraries/TickMath.sol";
 import {console} from "forge-std/console.sol";
 
-contract TestBothDirectionSwapHook is Test, Deployers {
+contract TestBlockPositionHook is Test, Deployers {
     using CurrencyLibrary for Currency;
     using PoolIdLibrary for PoolKey;
 
-    BothDirectionSwapHook hook;
+    BlockPositionHook hook;
 
     function setUp() public {
         // Deploy v4-core
@@ -35,8 +35,8 @@ contract TestBothDirectionSwapHook is Test, Deployers {
         vm.txGasPrice(10 gwei);
 
         // deploy our hook
-        deployCodeTo("BothDirectionSwapHook", abi.encode(manager), hookAddress);
-        hook = BothDirectionSwapHook(hookAddress);
+        deployCodeTo("BlockPositionHook", abi.encode(manager), hookAddress);
+        hook = BlockPositionHook(hookAddress);
 
         // Initialize a pool
         (key,) = initPool(
@@ -76,33 +76,37 @@ contract TestBothDirectionSwapHook is Test, Deployers {
         // ----------------------------------------------------------------------
 
         // 1. Conduct a swap in zeroForOne direction
-        // This should just use `BASE_FEE` since it's the first swap
+        // This should just use `MAX_FEE` since it's the first swap
         uint256 balanceOfToken1Before = currency1.balanceOfSelf();
         swapRouter.swap(key, params1, testSettings, ZERO_BYTES);
         uint256 balanceOfToken1After = currency1.balanceOfSelf();
-        uint256 outputFromFirstBaseFeeSwap = balanceOfToken1After - balanceOfToken1Before;
+        uint256 outputFromFirstSwap = balanceOfToken1After - balanceOfToken1Before;
 
         assertGt(balanceOfToken1After, balanceOfToken1Before);
 
-        console.log("Output from first base fee swap: ", outputFromFirstBaseFeeSwap);
+        console.log("Output from first swap: ", outputFromFirstSwap);
 
         // ----------------------------------------------------------------------
 
-        // 2. Conduct a swap in !zeroForOne direction
-        // This should use `MAX_FEE` since it's the first swap in this direction
+        hook.clearTransactionTracking(); // clear transient storage (simulate new tx)
+
         IPoolManager.SwapParams memory params2 = IPoolManager.SwapParams({
             zeroForOne: false,
             amountSpecified: -0.00001 ether,
             sqrtPriceLimitX96: TickMath.MAX_SQRT_PRICE - 1
         });
 
+        // ----------------------------------------------------------------------
+
+        // 2. Conduct a swap in oneForZero direction
+        // This should just decrease fee, since it is another tx within the same block
         uint256 balanceOfToken0Before = currency0.balanceOfSelf();
         swapRouter.swap(key, params2, testSettings, ZERO_BYTES);
         uint256 balanceOfToken0After = currency0.balanceOfSelf();
-        uint256 outputFromFirstMaxFeeSwap = balanceOfToken0After - balanceOfToken0Before;
+        uint256 outputFromSecondSwap = balanceOfToken0After - balanceOfToken0Before;
 
         assertGt(balanceOfToken0After, balanceOfToken0Before);
 
-        console.log("Output from second max fee swap: ", outputFromFirstMaxFeeSwap);
+        console.log("Output from second swap: ", outputFromSecondSwap);
     }
 }
