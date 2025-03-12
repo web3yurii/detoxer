@@ -24,6 +24,7 @@ contract DynamicPriorityFeeHook is BaseHook {
     uint256 constant SCALE = 128; // Approximation for division by 100
     uint256 constant SHIFT = 7; // Right shift equivalent to `/ 100`
 
+    // todo: add a way to set this value
     uint256 public averagePriorityFee; // Moving average of priority fee (in wei)
 
     error MustUseDynamicFee();

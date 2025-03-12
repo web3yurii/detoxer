@@ -18,7 +18,7 @@ contract BlockPositionHook is BaseHook {
     uint24 constant MIN_FEE = 4000; // 0.4%
     uint24 constant MAX_FEE = 6000; // 0.6%
 
-    uint256 constant DECREASE_PERCENTAGE = 90; // 90% old value
+    uint256 constant DECREASE_PERCENTAGE = 95; // 95% old value
 
     uint256 public averagePriorityFee; // Moving average of priority fee (in wei)
 
