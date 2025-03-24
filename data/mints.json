@@ -1,0 +1,452 @@
+[
+    {
+        "tickLower": 191150,
+        "tickUpper": 198080,
+        "amount": 345073104699360,
+        "amount0": 2995507735,
+        "amount1": 999999999871526528,
+        "blockNumber": 12376729,
+        "logIndex": 106
+    },
+    {
+        "tickLower": 194990,
+        "tickUpper": 195010,
+        "amount": 25652705721581,
+        "amount0": 1000000,
+        "amount1": 145737680853531,
+        "blockNumber": 12377035,
+        "logIndex": 195
+    },
+    {
+        "tickLower": 186730,
+        "tickUpper": 195460,
+        "amount": 447994594415865,
+        "amount0": 598469729,
+        "amount1": 2599999995846642176,
+        "blockNumber": 12377266,
+        "logIndex": 286
+    },
+    {
+        "tickLower": 194660,
+        "tickUpper": 194990,
+        "amount": 3508224747038658,
+        "amount0": 3405610348,
+        "amount1": 0,
+        "blockNumber": 12377308,
+        "logIndex": 355
+    },
+    {
+        "tickLower": 194640,
+        "tickUpper": 194660,
+        "amount": 35118767990408024,
+        "amount0": 1549658850,
+        "amount1": 151652526935341120,
+        "blockNumber": 12377327,
+        "logIndex": 105
+    },
+    {
+        "tickLower": 193380,
+        "tickUpper": 196260,
+        "amount": 4828391768114933,
+        "amount0": 22181745033,
+        "amount1": 4999999999799242752,
+        "blockNumber": 12377429,
+        "logIndex": 37
+    },
+    {
+        "tickLower": 193380,
+        "tickUpper": 200310,
+        "amount": 1092382261109467,
+        "amount0": 15454577376,
+        "amount1": 1282710509619309056,
+        "blockNumber": 12377645,
+        "logIndex": 294
+    },
+    {
+        "tickLower": 194750,
+        "tickUpper": 194790,
+        "amount": 1499570648517615,
+        "amount0": 167201379,
+        "amount1": 2790710881979345,
+        "blockNumber": 12378038,
+        "logIndex": 326
+    },
+    {
+        "tickLower": -46050,
+        "tickUpper": 414490,
+        "amount": 3068914230032,
+        "amount0": 181389532,
+        "amount1": 51921516403623352,
+        "blockNumber": 12378075,
+        "logIndex": 156
+    },
+    {
+        "tickLower": 194720,
+        "tickUpper": 194840,
+        "amount": 38466559516912,
+        "amount0": 10000000,
+        "amount1": 1033365407263396,
+        "blockNumber": 12378260,
+        "logIndex": 211
+    },
+    {
+        "tickLower": 193380,
+        "tickUpper": 194830,
+        "amount": 14688771335513,
+        "amount0": 264647,
+        "amount1": 17386686370896312,
+        "blockNumber": 12378416,
+        "logIndex": 259
+    },
+    {
+        "tickLower": 343580,
+        "tickUpper": 345410,
+        "amount": 16506652945736045,
+        "amount0": 50000000,
+        "amount1": 0,
+        "blockNumber": 12378448,
+        "logIndex": 160
+    },
+    {
+        "tickLower": 191770,
+        "tickUpper": 196260,
+        "amount": 400177617732153,
+        "amount0": 1676886465,
+        "amount1": 949947102876345984,
+        "blockNumber": 12378484,
+        "logIndex": 326
+    },
+    {
+        "tickLower": 343580,
+        "tickUpper": 345410,
+        "amount": 209568465799064,
+        "amount0": 634800,
+        "amount1": 0,
+        "blockNumber": 12378576,
+        "logIndex": 215
+    },
+    {
+        "tickLower": 276320,
+        "tickUpper": 276330,
+        "amount": 2000197335909935,
+        "amount0": 1000000,
+        "amount1": 0,
+        "blockNumber": 12378597,
+        "logIndex": 194
+    },
+    {
+        "tickLower": 189320,
+        "tickUpper": 200310,
+        "amount": 12206894935807,
+        "amount0": 171981388,
+        "amount1": 49999999837593960,
+        "blockNumber": 12378833,
+        "logIndex": 314
+    },
+    {
+        "tickLower": 191150,
+        "tickUpper": 196260,
+        "amount": 44311362165068,
+        "amount0": 179590847,
+        "amount1": 126674935761334624,
+        "blockNumber": 12379003,
+        "logIndex": 269
+    },
+    {
+        "tickLower": 184200,
+        "tickUpper": 276300,
+        "amount": 17409290878,
+        "amount0": 1000000,
+        "amount1": 123937558673417,
+        "blockNumber": 12379275,
+        "logIndex": 230
+    },
+    {
+        "tickLower": 223340,
+        "tickUpper": 230270,
+        "amount": 96598418924930,
+        "amount0": 400000000,
+        "amount1": 0,
+        "blockNumber": 12379390,
+        "logIndex": 243
+    },
+    {
+        "tickLower": 191150,
+        "tickUpper": 193380,
+        "amount": 599444845527172,
+        "amount0": 0,
+        "amount1": 999999999999998464,
+        "blockNumber": 12379639,
+        "logIndex": 36
+    },
+    {
+        "tickLower": 194900,
+        "tickUpper": 194910,
+        "amount": 66651400156776,
+        "amount0": 1000000,
+        "amount1": 277389685921733,
+        "blockNumber": 12379648,
+        "logIndex": 69
+    },
+    {
+        "tickLower": 186450,
+        "tickUpper": 196260,
+        "amount": 67994622691286,
+        "amount0": 261022394,
+        "amount1": 399999999318196032,
+        "blockNumber": 12379655,
+        "logIndex": 161
+    },
+    {
+        "tickLower": 193640,
+        "tickUpper": 196160,
+        "amount": 2755116590594920,
+        "amount0": 9925825606,
+        "amount1": 2850474036340328448,
+        "blockNumber": 12379712,
+        "logIndex": 161
+    },
+    {
+        "tickLower": 192570,
+        "tickUpper": 197360,
+        "amount": 16071879483136801,
+        "amount0": 107809039770,
+        "amount1": 30505946835763097600,
+        "blockNumber": 12379813,
+        "logIndex": 133
+    },
+    {
+        "tickLower": 191150,
+        "tickUpper": 198680,
+        "amount": 34146802946959,
+        "amount0": 343286553,
+        "amount1": 99999999819507424,
+        "blockNumber": 12380068,
+        "logIndex": 119
+    },
+    {
+        "tickLower": 180160,
+        "tickUpper": 210810,
+        "amount": 18467115472546,
+        "amount0": 600000000,
+        "amount1": 162505445932237952,
+        "blockNumber": 12380121,
+        "logIndex": 234
+    },
+    {
+        "tickLower": 184220,
+        "tickUpper": 276320,
+        "amount": 1783269251833,
+        "amount0": 102842530,
+        "amount1": 12558155741449406,
+        "blockNumber": 12380147,
+        "logIndex": 409
+    },
+    {
+        "tickLower": 193140,
+        "tickUpper": 196430,
+        "amount": 2617554277369521,
+        "amount0": 11444498607,
+        "amount1": 3719345829083283968,
+        "blockNumber": 12380151,
+        "logIndex": 302
+    },
+    {
+        "tickLower": 276320,
+        "tickUpper": 357790,
+        "amount": 1017111148,
+        "amount0": 1000,
+        "amount1": 0,
+        "blockNumber": 12380293,
+        "logIndex": 120
+    },
+    {
+        "tickLower": 195010,
+        "tickUpper": 195030,
+        "amount": 4413124697142819,
+        "amount0": 257116967,
+        "amount1": 0,
+        "blockNumber": 12380458,
+        "logIndex": 282
+    },
+    {
+        "tickLower": 354570,
+        "tickUpper": 359260,
+        "amount": 47845114297170429,
+        "amount0": 200000000,
+        "amount1": 0,
+        "blockNumber": 12380465,
+        "logIndex": 99
+    },
+    {
+        "tickLower": 318320,
+        "tickUpper": 345410,
+        "amount": 1760538380457838,
+        "amount0": 159996000,
+        "amount1": 0,
+        "blockNumber": 12380625,
+        "logIndex": 114
+    },
+    {
+        "tickLower": 194680,
+        "tickUpper": 194850,
+        "amount": 1312727855086161,
+        "amount0": 308800020,
+        "amount1": 99999999922400080,
+        "blockNumber": 12381057,
+        "logIndex": 156
+    },
+    {
+        "tickLower": 194680,
+        "tickUpper": 194850,
+        "amount": 1312727855086161,
+        "amount0": 308800020,
+        "amount1": 99999999922400080,
+        "blockNumber": 12381057,
+        "logIndex": 162
+    },
+    {
+        "tickLower": 194680,
+        "tickUpper": 194850,
+        "amount": 1312727855086161,
+        "amount0": 308800020,
+        "amount1": 99999999922400080,
+        "blockNumber": 12381057,
+        "logIndex": 168
+    },
+    {
+        "tickLower": 194590,
+        "tickUpper": 195040,
+        "amount": 268446570641767,
+        "amount0": 180283740,
+        "amount1": 49999999962767288,
+        "blockNumber": 12381088,
+        "logIndex": 317
+    },
+    {
+        "tickLower": 193380,
+        "tickUpper": 196260,
+        "amount": 1229267491509097,
+        "amount0": 5059530153,
+        "amount1": 1441137535239285504,
+        "blockNumber": 12381089,
+        "logIndex": 319
+    },
+    {
+        "tickLower": 187920,
+        "tickUpper": 217920,
+        "amount": 75916542054248,
+        "amount0": 3062156876,
+        "amount1": 375768790012083328,
+        "blockNumber": 12381090,
+        "logIndex": 174
+    },
+    {
+        "tickLower": 276300,
+        "tickUpper": 276320,
+        "amount": 2998046644224003,
+        "amount0": 3000000,
+        "amount1": 0,
+        "blockNumber": 12381368,
+        "logIndex": 62
+    },
+    {
+        "tickLower": 193630,
+        "tickUpper": 195610,
+        "amount": 14435552699797257,
+        "amount0": 39676621748,
+        "amount1": 12227617820660039680,
+        "blockNumber": 12381408,
+        "logIndex": 212
+    },
+    {
+        "tickLower": 194590,
+        "tickUpper": 195170,
+        "amount": 7601027348307769,
+        "amount0": 5991826415,
+        "amount1": 1989209226410271744,
+        "blockNumber": 12382455,
+        "logIndex": 334
+    },
+    {
+        "tickLower": 184210,
+        "tickUpper": 194800,
+        "amount": 1433017637853446,
+        "amount0": 0,
+        "amount1": 9999999999999995904,
+        "blockNumber": 12382536,
+        "logIndex": 47
+    },
+    {
+        "tickLower": 95810,
+        "tickUpper": 95820,
+        "amount": 830863045158786350,
+        "amount0": 0,
+        "amount1": 50000000000000000,
+        "blockNumber": 12382631,
+        "logIndex": 315
+    },
+    {
+        "tickLower": 193380,
+        "tickUpper": 196260,
+        "amount": 2207735576473218,
+        "amount0": 10129997451,
+        "amount1": 2289719285381771776,
+        "blockNumber": 12383428,
+        "logIndex": 115
+    },
+    {
+        "tickLower": 193380,
+        "tickUpper": 195930,
+        "amount": 29245817246894,
+        "amount0": 105274073,
+        "amount1": 30978269487823956,
+        "blockNumber": 12383521,
+        "logIndex": 155
+    },
+    {
+        "tickLower": 194590,
+        "tickUpper": 195170,
+        "amount": 8793618319213550,
+        "amount0": 12000000000,
+        "amount1": 840702628678254464,
+        "blockNumber": 12383634,
+        "logIndex": 56
+    },
+    {
+        "tickLower": 391460,
+        "tickUpper": 414490,
+        "amount": 11099171960,
+        "amount0": 24,
+        "amount1": 0,
+        "blockNumber": 12385024,
+        "logIndex": 154
+    },
+    {
+        "tickLower": 344450,
+        "tickUpper": 345410,
+        "amount": 3216578076775223,
+        "amount0": 5000000,
+        "amount1": 0,
+        "blockNumber": 12385123,
+        "logIndex": 206
+    },
+    {
+        "tickLower": 194480,
+        "tickUpper": 195190,
+        "amount": 151823369986408700,
+        "amount0": 141257177645,
+        "amount1": 49999999999837716480,
+        "blockNumber": 12385806,
+        "logIndex": 73
+    },
+    {
+        "tickLower": 194880,
+        "tickUpper": 194970,
+        "amount": 151573708324872,
+        "amount0": 5634901,
+        "amount1": 9999998562148344,
+        "blockNumber": 12386093,
+        "logIndex": 29
+    }
+]
