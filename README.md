@@ -168,6 +168,9 @@ Each row includes **3 values**:
 
 - Use `hookData` instead of `tx.origin` to identify user address more reliably  
 - Tune fee percentage dynamically for each mitigation technique  
+- Add new hooks to target other MEV patterns (e.g., front-running liquidity, back-running liquidity, txCount, etc.)
 - Combine all techniques into a single, powerful **Detoxer Hook**  
 - Enhance analytics: compute net profit breakdown per trade (for LP, attacker, victim, and regular user)  
-
+- Integrate MEV data from Flashbots or similar services to improve detection and mitigation
+- Integrate with other protocols (e.g., Brevis, ChainLink etc.) to have some off-chain data and improve the detection of MEV
+- Collect HookFee and redistribute historicaly rewards to victims
