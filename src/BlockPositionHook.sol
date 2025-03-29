@@ -15,10 +15,11 @@ contract BlockPositionHook is BaseHook {
 
     uint256 private constant SAME_TX__SLOT = 0x01; // Define transient storage slot
 
-    uint24 constant MIN_FEE = 4000; // 0.4%
-    uint24 constant MAX_FEE = 6000; // 0.6%
+    uint24 constant MIN_FEE = 5_000; // 0.5%
+    uint24 constant MAX_FEE = 10_500; // 1.05%
 
-    uint256 constant DECREASE_PERCENTAGE = 95; // 95% old value
+    uint24 constant BASE_FACTOR = 100; // 100%
+    uint256 constant DECREASE_PERCENTAGE = 50; // 50% old value
 
     uint256 public averagePriorityFee; // Moving average of priority fee (in wei)
 
@@ -29,6 +30,8 @@ contract BlockPositionHook is BaseHook {
         uint128 latestTxBlockIndex; // 128 bits
         uint24 latestFee; // 24 bits
     }
+
+    mapping(address => uint256) public lastTxBlock;
 
     GlobalState private globalState;
 
@@ -76,15 +79,20 @@ contract BlockPositionHook is BaseHook {
             gs.latestFee = MAX_FEE;
             startTransactionTracking();
         } else if (!isSameTransaction()) {
-            // same block, different transaction - decrease fee
-            gs.latestTxBlockIndex++;
-            uint24 calculatedFee = uint24(gs.latestFee * DECREASE_PERCENTAGE / 100); // 90% old value
-            gs.latestFee = calculatedFee > MIN_FEE ? calculatedFee : MIN_FEE;
+            bool isLastBlockTheSame = lastTxBlock[tx.origin] == block.number;
+            if (isLastBlockTheSame) {
+                // same block, different transaction, but the same tx origin (possible back run) - max fee
+                gs.latestFee = MAX_FEE;
+            } else {
+                // same block, different transaction - decrease fee
+                gs.latestTxBlockIndex++;
+                uint24 calculatedFee = uint24(gs.latestFee * DECREASE_PERCENTAGE / BASE_FACTOR);
+                gs.latestFee = calculatedFee > MIN_FEE ? calculatedFee : MIN_FEE;
+            }
         } // same block and same transaction, we keep the same fee
 
         globalState = gs;
-
-        console.log("Fee = %d", gs.latestFee);
+        lastTxBlock[tx.origin] = block.number;
 
         uint24 feeWithFlag = gs.latestFee | LPFeeLibrary.OVERRIDE_FEE_FLAG;
         return (this.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, feeWithFlag);
@@ -104,10 +112,10 @@ contract BlockPositionHook is BaseHook {
         return storedValue == 1;
     }
 
+    // fixme: only for testing purposes, remove in production
     function clearTransactionTracking() external {
         assembly {
             tstore(SAME_TX__SLOT, 0) // Clear the value in transient storage
         }
     }
-
 }

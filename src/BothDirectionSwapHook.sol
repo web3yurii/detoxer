@@ -15,8 +15,13 @@ contract BothDirectionSwapHook is BaseHook {
     using LPFeeLibrary for uint24;
     using PoolIdLibrary for PoolKey;
 
-    uint24 constant MAX_FEE = 7000; // 0.7%
-    uint24 constant BASE_FEE = 5000; // 0.5%
+    // we charge sandwich x2 fee
+    // base fee = 0.9% (less than usuall 1.0%)
+    // 0.9 + 0.9 = 1.8% sandwich fee
+    // 1.8% on front run + 1.8% on back run
+    // 3.6% total on back run (since we can only identify sandwich on back run)    
+    uint24 constant BASE_FEE = 9_000; // 0.9%
+    uint24 constant MAX_FEE = 36_000; // 3.6%
 
     mapping(uint256 => uint256) public lastSwapBlock;
 
@@ -58,8 +63,8 @@ contract BothDirectionSwapHook is BaseHook {
         returns (bytes4, BeforeSwapDelta, uint24)
     {
         uint256 oppositeSwapKey = getPackedKey(tx.origin, key.toId(), !params.zeroForOne);
-        uint256 lastBlock = lastSwapBlock[oppositeSwapKey];
-        uint24 fee = block.number == lastBlock ? MAX_FEE : BASE_FEE;
+        bool isBothDirectionSwap = block.number == lastSwapBlock[oppositeSwapKey];
+        uint24 fee = isBothDirectionSwap ? MAX_FEE : BASE_FEE;
         lastSwapBlock[getPackedKey(tx.origin, key.toId(), params.zeroForOne)] = block.number;
         uint24 feeWithFlag = fee | LPFeeLibrary.OVERRIDE_FEE_FLAG;
         return (this.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, feeWithFlag);

@@ -22,11 +22,13 @@ contract InitialPriceRangeHook is BaseHook {
     using PoolIdLibrary for PoolKey;
     using LPFeeLibrary for uint24;
 
-    uint24 constant MAX_FEE = 15000; // 1.5%
-    uint24 constant MID_FEE = 10000; // 1.0%
+    uint24 constant MAX_FEE = 20000; // 2.0%
+    uint24 constant MID_FEE = 9000; // 0.9%
     uint24 constant MIN_FEE = 5000; // 0.5%
 
     uint24 constant BASE_FEE_WINDOW_PERCENTAGE = 5;
+
+    event AfterSwapFee(uint24 fee, uint128 feeAmount0, uint128 feeAmount1);
 
     struct PoolState {
         uint160 blockStartPrice;
@@ -109,21 +111,16 @@ contract InitialPriceRangeHook is BaseHook {
         uint128 feeDelta;
         {
             int128 amount = params.zeroForOne ? delta.amount1() : delta.amount0();
-
-            console.log("amount: %d", amount);
-            console.log("fee: %d", fee);
-
             feeDelta = uint128(amount) * fee / 1e6;
         }
-
-        console.log("feeDelta: %d", feeDelta);
 
         // settle balances - direct donation to the pool
         if (params.zeroForOne) {
             poolManager.donate(key, 0, feeDelta, "");
-            
+            emit AfterSwapFee(fee, 0, feeDelta);
         } else {
             poolManager.donate(key, feeDelta, 0, "");
+            emit AfterSwapFee(fee, feeDelta, 0);
         }
 
         return (this.afterSwap.selector, int128(feeDelta));
@@ -134,7 +131,6 @@ contract InitialPriceRangeHook is BaseHook {
         pure
         returns (uint24)
     {
-
         uint160 priceChange = beforePrice > afterPrice ? beforePrice - afterPrice : afterPrice - beforePrice;
         uint160 midFeeWindow = priceChange * BASE_FEE_WINDOW_PERCENTAGE / 100;
 

@@ -17,10 +17,10 @@ import {Constants} from "@uniswap/v4-core/test/utils/Constants.sol";
 import {TickMath} from "v4-core/libraries/TickMath.sol";
 import {StateLibrary} from "v4-core/libraries/StateLibrary.sol";
 import {LiquidityAmounts} from "@uniswap/v4-core/test/utils/LiquidityAmounts.sol";
-import {InitialPriceRangeHook} from "../src/InitialPriceRangeHook.sol";
+import {DynamicPriorityFeeHook} from "../src/DynamicPriorityFeeHook.sol";
 import {console} from "forge-std/console.sol";
 
-contract InitialPriceRangeHookTest is Test, Deployers {
+contract DynamicPriorityFeeHookTest is Test, Deployers {
     using StateLibrary for IPoolManager;
     using TickMath for int24;
 
@@ -46,21 +46,17 @@ contract InitialPriceRangeHookTest is Test, Deployers {
 
         // Deploy our hook with the proper flags
 
-        // InitialPriceRangeHook
-        address hookAddress = address(
-            uint160(
-                Hooks.BEFORE_INITIALIZE_FLAG | Hooks.AFTER_INITIALIZE_FLAG | Hooks.BEFORE_SWAP_FLAG
-                    | Hooks.AFTER_SWAP_FLAG | Hooks.AFTER_SWAP_RETURNS_DELTA_FLAG
-            )
-        );
-        deployCodeTo("InitialPriceRangeHook", abi.encode(manager), hookAddress);
-        IHooks hook = InitialPriceRangeHook(hookAddress);
+        // DynamicPriorityFeeHook
+        uint256 averagePriorityFee = 4877462143;
+        address hookAddress = address(uint160(Hooks.BEFORE_INITIALIZE_FLAG | Hooks.BEFORE_SWAP_FLAG));
+        deployCodeTo("DynamicPriorityFeeHook", abi.encode(manager, averagePriorityFee), hookAddress);
+        IHooks hook = DynamicPriorityFeeHook(hookAddress);
 
         (key,) = initPool(currency0, currency1, hook, LPFeeLibrary.DYNAMIC_FEE_FLAG, 200, 4266437714232750896327);
     }
 
     function testReplayHistoricalEvents() public {
-        GraphEvent[] memory events = loadEvents();
+        GraphEvent[] memory events  = loadEvents();
 
         for (uint256 i = 0; i < events.length; i++) {
             GraphEvent memory e = events[i];
@@ -87,8 +83,9 @@ contract InitialPriceRangeHookTest is Test, Deployers {
             for (uint256 j = 0; j < logs.length; j++) {
                 Vm.Log memory log = logs[j];
 
-                if (log.topics[0] == keccak256("AfterSwapFee(uint24,uint128,uint128)")) {
-                    (uint24 fee,,) = abi.decode(log.data, (uint24, uint128, uint128));
+                if (log.topics[0] == keccak256("Swap(bytes32,address,int128,int128,uint160,uint128,int24,uint24)")) {
+                    (,,,,, uint24 fee) =
+                        abi.decode(log.data, (int128, int128, uint160, uint128, int24, uint24));
 
                     swapCount[0]++;
                     feeDelta[0] += fee;
@@ -112,13 +109,12 @@ contract InitialPriceRangeHookTest is Test, Deployers {
 
         persisteResults();
 
-        console.log("InitialPriceRangeHookTest - processed %s events", events.length);
+        console.log("DynamicPriorityFeeHookTest - processed %s events", events.length);
     }
 
     function swap(GraphEvent memory e) internal {
         bool zeroForOne = e.amount0 < 0;
         int256 amount = zeroForOne ? e.amount0 : e.amount1;
-        // IPoolManager.SwapParams memory params = IPoolManager.SwapParams(zeroForOne, amount, uint160(e.sqrtPriceX96));
 
         uint160 sqrtPriceLimitX96 = zeroForOne ? TickMath.MIN_SQRT_PRICE + 1 : TickMath.MAX_SQRT_PRICE - 1;
         IPoolManager.SwapParams memory params = IPoolManager.SwapParams(zeroForOne, amount, sqrtPriceLimitX96);
@@ -148,7 +144,7 @@ contract InitialPriceRangeHookTest is Test, Deployers {
     function persisteResults() internal {
         string[4] memory users = ["total", "attacker", "victim", "regular"];
 
-        string memory path = "data/reports/initial-price-range-results.csv";
+        string memory path = "data/reports/dynamic-priority-fee-results.csv";
 
         vm.writeFile(path, "totalSwapCount,totalFeeDelta,averageSwapFeeDelta\n");
 

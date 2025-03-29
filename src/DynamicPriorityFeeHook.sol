@@ -8,29 +8,27 @@ import {PoolKey} from "v4-core/types/PoolKey.sol";
 import {BalanceDelta} from "v4-core/types/BalanceDelta.sol";
 import {LPFeeLibrary} from "v4-core/libraries/LPFeeLibrary.sol";
 import {BeforeSwapDelta, BeforeSwapDeltaLibrary} from "v4-core/types/BeforeSwapDelta.sol";
+import {console} from "forge-std/console.sol";
 
 contract DynamicPriorityFeeHook is BaseHook {
     using LPFeeLibrary for uint24;
 
-    uint24 constant MIN_FEE = 3000; // 0.3%
-    uint24 constant MAX_FEE = 7000; // 0.7%
-    uint24 constant BASE_FEE = 5000; // 0.5%
+    uint24 constant MIN_FEE = 5_000; // 0.5%
+    uint24 constant MAX_FEE = 50_000; // 5.0%
+    uint24 constant BASE_FEE = 10_000; // 1.0%
 
-    uint8 constant BASE_FACTOR = 100; // 1.0
-
+    uint8 constant BASE_FACTOR = 100; // 100%
     uint256 constant WEIGHT_OLD = 95; // 95% old value
     uint256 constant WEIGHT_NEW = 5; // 5% new value
 
-    uint256 constant SCALE = 128; // Approximation for division by 100
-    uint256 constant SHIFT = 7; // Right shift equivalent to `/ 100`
-
-    // todo: add a way to set this value
     uint256 public averagePriorityFee; // Moving average of priority fee (in wei)
 
     error MustUseDynamicFee();
 
     // Initialize BaseHook parent contract in the constructor
-    constructor(IPoolManager _poolManager) BaseHook(_poolManager) {}
+    constructor(IPoolManager _poolManager, uint256 initialAveragePriorityFee) BaseHook(_poolManager) {
+        averagePriorityFee = initialAveragePriorityFee;
+    }
 
     // Required override function for BaseHook to let the PoolManager know which hooks are implemented
     function getHookPermissions() public pure override returns (Hooks.Permissions memory) {
@@ -66,7 +64,7 @@ contract DynamicPriorityFeeHook is BaseHook {
     {
         uint256 priorityFee = tx.gasprice - block.basefee;
         uint24 calculatedFee = uint24(BASE_FEE * priorityFee / averagePriorityFee);
-        averagePriorityFee = ((averagePriorityFee * WEIGHT_OLD) + (priorityFee * WEIGHT_NEW)) * SCALE >> SHIFT;
+        averagePriorityFee = ((averagePriorityFee * WEIGHT_OLD) + (priorityFee * WEIGHT_NEW)) / BASE_FACTOR;
         uint24 fee = calculatedFee < MIN_FEE ? MIN_FEE : calculatedFee > MAX_FEE ? MAX_FEE : calculatedFee;
         uint24 feeWithFlag = fee | LPFeeLibrary.OVERRIDE_FEE_FLAG;
         return (this.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, feeWithFlag);

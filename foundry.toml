@@ -4,3 +4,11 @@ out = "out"
 libs = ["lib"]
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+
+fs_permissions = [
+    { access = "read", path = "data/graph/events.json" },
+    { access = "write", path = "data/reports/block-postition-results.csv" },
+    { access = "write", path = "data/reports/both-direction-results.csv" },
+    { access = "write", path = "data/reports/dynamic-priority-fee-results.csv" },
+    { access = "write", path = "data/reports/initial-price-range-results.csv" }
+]
