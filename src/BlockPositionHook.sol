@@ -84,7 +84,7 @@ contract BlockPositionHook is BaseHook {
                 // same block, different transaction, but the same tx origin (possible back run) - max fee
                 gs.latestFee = MAX_FEE;
             } else {
-                // same block, different transaction - decrease fee
+                // same block, different transaction, different tx origin - decrease fee
                 gs.latestTxBlockIndex++;
                 uint24 calculatedFee = uint24(gs.latestFee * DECREASE_PERCENTAGE / BASE_FACTOR);
                 gs.latestFee = calculatedFee > MIN_FEE ? calculatedFee : MIN_FEE;

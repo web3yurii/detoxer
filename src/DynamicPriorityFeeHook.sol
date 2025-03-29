@@ -21,7 +21,9 @@ contract DynamicPriorityFeeHook is BaseHook {
     uint256 constant WEIGHT_OLD = 95; // 95% old value
     uint256 constant WEIGHT_NEW = 5; // 5% new value
 
-    uint256 public averagePriorityFee; // Moving average of priority fee (in wei)
+    // Moving average of priority fee (in wei)
+    // Should be calculated offchain and passed initially to constructor 
+    uint256 public averagePriorityFee; 
 
     error MustUseDynamicFee();
 

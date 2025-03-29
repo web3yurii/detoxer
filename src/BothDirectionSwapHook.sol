@@ -16,7 +16,7 @@ contract BothDirectionSwapHook is BaseHook {
     using PoolIdLibrary for PoolKey;
 
     // we charge sandwich x2 fee
-    // base fee = 0.9% (less than usuall 1.0%)
+    // base fee = 0.9% (quite less than usuall 1.0%)
     // 0.9 + 0.9 = 1.8% sandwich fee
     // 1.8% on front run + 1.8% on back run
     // 3.6% total on back run (since we can only identify sandwich on back run)    
