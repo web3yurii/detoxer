@@ -112,7 +112,8 @@ for s in data["swaps"]:
 
     block_number = int(s["transaction"]["blockNumber"])
     if block_number not in block_info:
-        block_info[block_number] = web3.eth.get_block(block_number).baseFeePerGas
+        block_info[block_number] = web3.eth.get_block(
+            block_number).baseFeePerGas
 
     txId = s["transaction"]["id"]
 
@@ -143,7 +144,8 @@ for m in data["mints"]:
 
     block_number = int(m["transaction"]["blockNumber"])
     if block_number not in block_info:
-        block_info[block_number] = web3.eth.get_block(block_number).baseFeePerGas
+        block_info[block_number] = web3.eth.get_block(
+            block_number).baseFeePerGas
 
     txId = m["transaction"]["id"]
 
@@ -174,7 +176,8 @@ for b in data["burns"]:
 
     block_number = int(b["transaction"]["blockNumber"])
     if block_number not in block_info:
-        block_info[block_number] = web3.eth.get_block(block_number).baseFeePerGas
+        block_info[block_number] = web3.eth.get_block(
+            block_number).baseFeePerGas
 
     txId = b["transaction"]["id"]
 
@@ -216,12 +219,12 @@ print("✅ Events saved!")
 
 # sandwich info:
 # 0 - no sandwich
-# 1 - front running
+# 1 - front running swap
 # 2 -
-# 3 -
+# 3 - front running mint
 # 4 -
 # 5 - victim swap
 # 6 -
-# 7 - 
+# 7 - back running burn
 # 8 -
-# 9 - back running
+# 9 - back running swap
