@@ -166,11 +166,44 @@ Each row includes **3 values**:
 
 ## Future Improvements
 
-- Use `hookData` instead of `tx.origin` to identify user address more reliably  
-- Tune fee percentage dynamically for each mitigation technique  
-- Add new hooks to target other MEV patterns (e.g., front-running liquidity, back-running liquidity, txCount, etc.)
-- Combine all techniques into a single, powerful **Detoxer Hook**  
-- Enhance analytics: compute net profit breakdown per trade (for LP, attacker, victim, and regular user)  
-- Integrate MEV data from Flashbots or similar services to improve detection and mitigation
-- Integrate with other protocols (e.g., Brevis, ChainLink etc.) to have some off-chain data and improve the detection of MEV
-- Collect HookFee and redistribute historicaly rewards to victims
+**Add new features:**
+
+- Techniques:
+  - Front/back run liquidity modification fee
+  - Past activity historical karma/rate fee
+  - Cross-pool activity logic fee
+  - Arbitrage like behaviour identification
+  - Front/back run amount comparison fee
+  - High activity fee etc.
+- Integrations:
+  - Brevis (off-chain mev proofs)
+  - Chainlink/EigenLayer (fair price feed)
+  - Arbitrum Stylus (gas efficient Rust implementation)
+  - FlashBots/Zeromev (MEV API for backtesting)
+
+**Improve backtesting:**
+
+- Variety:
+  - Low/high liquidity
+  - Low/high base fee level
+  - Low/high volume
+  - New sandwich patterns
+  - Arbitrage protection testing
+  - Measure net profit (not fee level)
+- Automation:
+  - One-click setup for any pool
+  - UI to visualize results
+  - Optimized API usage
+
+**Optimize solution:**
+
+- Gas:
+  - Storage management
+  - Efficient Math
+  - Reuse of data
+- Fee:
+  - Tune to better values
+  - Compatible with any pool
+- Data:
+  - Emit standard events (OZ)
+  - Use hookData (improve protection)
