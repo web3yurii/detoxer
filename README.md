@@ -2,6 +2,9 @@
 
 **Detoxer** is a suite of custom Uniswap v4 hooks designed to **discourage MEV attacks (especially sandwich)**, **punish attackers**, **Revard victims**, **protect regular users**, and **Ensure LP have the same fee collected** by dynamically adjusting swap fees. Each hook independently targets a different class of exploit pattern. These hooks can be combined to create a powerful complex hook to fight against MEV attacks.
 
+Deck - [Google Slides](https://docs.google.com/presentation/d/16recVigZBdYaYNwmzYI4cIYsjRycBFh4Xn4_6Clkr7I/edit?usp=sharing)
+Video - [YouTube](https://www.youtube.com/watch?v=eJUWp7XjE0k)
+
 ---
 
 ## 🔌 Hooks Overview
